@@ -1,27 +1,26 @@
 from data_types import *
+from data_types import SleepingQueenPosition
 
 
 class QueenCollection:
     def __init__(self):
-        self.queens_dict = dict()
-
+        self.queens_array = []
+        for i in range(12):
+            self.queens_array.append(None)
     def addQueen(self, queen: Queen):
-        self.queens_dict[Position] = queen # spojazdnit Positions
+        for index in range(12):
+            if self.queens_array[index] is None:
+                self.queens_array[index] = queen
 
     def removeQueen(self, position: SleepingQueenPosition) -> Optional[Queen]:
-        found_position = None
-
-        for current_position, queen in self.queens_dict.items():
-            if current_position == position: # position je class
-                found_position = current_position
-
-        if found_position is not None:
-            return self.queens_dict.pop(found_position)
-
+        queen = self.queens_array[position.getCardIndex()]
+        if queen is not None:
+            self.queens_array[position.getCardIndex()] = None
+            return queen
         return None
 
-    def getQueens(self) -> dict[Position, Queen]:
-        return self.queens_dict
+    def getQueens(self) -> List:
+        return self.queens_array
 
 
 class SleepingQueens(QueenCollection):

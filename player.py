@@ -2,19 +2,21 @@ from queens import *
 
 
 class Player:
-    def __init__(self):
-        pass
+    def __init__(self, cards: List[Card], player_id: int):
+        self.awoken_queens = QueenCollection()
+        self.hand = Hand(player_id, cards)
 
     def play(self, cards: List[Position]):
         pass
 
     def getPlayerState(self) -> PlayerState:
-        pass
+        return PlayerState(self.hand.cards, self.awoken_queens)
 
 
 class Hand:
-    def __init__(self, player_id):
-        self.player_id: int = player_id
+    def __init__(self, player_id: int, cards: List[Card]):
+        self.player_id = player_id
+        self.cards = cards
 
     def pickCards(self, positions: List[HandPosition]) -> Optional[List[Card]]:
         pass
@@ -25,11 +27,11 @@ class Hand:
     def returnPickedCards(self):
         pass
 
-    def hasCardOfType(self, type: CardType) -> HandPosition:
+    def hasCardOfType(self, card_type: CardType) -> HandPosition:
         pass
 
     def getCards(self) -> List[Card]:
-        pass
+        return self.cards
 
 
 class EvaluateAttack:
@@ -44,16 +46,20 @@ class EvaluateNumberedCards:
     def __init__(self):
         pass
 
-    def play(self, cards: List[Cards]) -> bool:
+    def play(self, cards: List[Card]) -> bool:
         pass
 
 
 class DrawingAndTrashPile:
-    def __init__(self):
-        pass
+    def __init__(self, cards: List[Card]):
+        self.drawing_pile = cards
+        self.discard_pile = []
+        self.cards_to_be_discarded = []
 
     def discardAndDraw(self, discard: List[Card]) -> List[Card]:
-        pass
+        self.cards_to_be_discarded = discard
+        #TODO potiahnem abo daco
+        self.newTurn()
 
     def newTurn(self):
         pass
