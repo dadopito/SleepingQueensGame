@@ -1,5 +1,5 @@
-from data_types import *
-from data_types import SleepingQueenPosition
+from typing import Optional, List
+from data_types import Queen, SleepingQueenPosition
 
 
 class QueenCollection:
@@ -7,6 +7,7 @@ class QueenCollection:
         self.queens_array = []
         for i in range(12):
             self.queens_array.append(None)
+
     def addQueen(self, queen: Queen):
         for index in range(12):
             if self.queens_array[index] is None:
@@ -33,9 +34,6 @@ class AwokenQueens(QueenCollection):
         super().__init__()
 
 
-class MoveQueen:
-    def __init__(self):
-        pass
-
-    def play(self, target_queen: Position) -> bool:
-        pass
+# class MoveQueen:
+#     def play(self, target_queen: Position) -> bool:
+#         pass

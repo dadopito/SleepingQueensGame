@@ -1,8 +1,9 @@
 from random import shuffle
-
-from player import Player, DrawingAndTrashPile
-from queens import *
+from draw_and_trash_pile import DrawingAndTrashPile
+from player import Player
 from data_types import *
+from queens import QueenCollection
+
 
 class Game:
     def __init__(self, number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn):
@@ -32,36 +33,42 @@ class Game:
 
         shuffle(cards)
 
-        # TODO doriesit pocet hracov
+        # TODO number of players and their IDs through GameAdaptor
         self.players = []
         for i in range(4):
-            self.players.append(Player(cards[:5], i)) # TODO doriesit player_id
+            self.players.append(Player(cards[:5], i))
             del cards[:5]
 
-        # cards = drawing pile
         self.drawing_and_trash_pile = DrawingAndTrashPile(cards)
 
-        # a zavolat play na zahranie prveho kola...
-
-    def play(self, player_id: int, cards: List[Position]) -> Optional[GameState]:
+    def play(self, player_id: int, cards: List[HandPosition]) -> Optional[GameState]:
         pass
 
 
 class GameAdaptor:
-    pass
+    def __init__(self, number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn):
+        self.game = Game(number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn)
+
+
+class GameObserver:
+    def __init__(self):
+        pass
+
+    def notify(self, message: str):
+        pass
 
 
 class GameObservable:
     def __init__(self):
         pass
 
-    def add(self, observer: ObserverInterface):  # GameObserver??
+    def add(self, observer: GameObserver):
         pass
 
-    def addPlayer(self, player_id: int, observer: ObserverInterface):
+    def addPlayer(self, player_id: int, observer: GameObserver):
         pass
 
-    def remove(self, observer: ObserverInterface):
+    def remove(self, observer: GameObserver):
         pass
 
     def notifyAll(self, message: GameState):
@@ -73,12 +80,4 @@ class GamePlayerInterface:
         pass
 
     def play(self, player: str, cards: str) -> str:
-        pass
-
-
-class GameObserver:
-    def __init__(self):
-        pass
-
-    def notify(self, message: str):
         pass

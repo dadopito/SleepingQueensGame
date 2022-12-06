@@ -1,16 +1,13 @@
-from typing import *
-from queens import *
-from random import *
 from enum import Enum
+from typing import *
 
-# all cards: 12 queens, 8 kings, 4 knights, 4 sleeping potions,
-# 3 magic wands, 3 dragons, 4 of each number 1 through 10
+
 class Queen:
     def __init__(self, value: int):
-        self.points = value
+        self._points = value
 
     def getPoints(self) -> int:
-        return self.points
+        return self._points
 
 
 class CardType(Enum):
@@ -24,16 +21,16 @@ class CardType(Enum):
 
 class Card:
     def __init__(self, card_type: CardType, value: int):
-        self.type = card_type
+        self.card_type = card_type
         self.value = value
 
 
 class Position:
     def __init__(self, card_index: int):
-        self.card_index = card_index
+        self._card_index = card_index
 
     def getCardIndex(self) -> int:
-        return self.card_index
+        return self._card_index
 
 
 class SleepingQueenPosition(Position):
@@ -42,19 +39,21 @@ class SleepingQueenPosition(Position):
 
 
 class AwokenQueenPosition(Position):
-    def __init__(self, card_index: int):
+    def __init__(self, card_index: int, player_id: int):
         super().__init__(card_index)
+        self._player_id = player_id
 
     def getPlayerIndex(self) -> int:
-        pass
+        return self._player_id
 
 
 class HandPosition(Position):
-    def __init__(self, card_index: int):
+    def __init__(self, card_index: int, player_id: int):
         super().__init__(card_index)
+        self._player_id = player_id
 
     def getPlayerIndex(self) -> int:
-        pass
+        return self._player_id
 
 
 class GameState:
@@ -67,9 +66,3 @@ class GameState:
         self.cards = cards
         self.awoken_queens = awoken_queens
         self.cards_discarded_last_turn = cards_discarded_last_turn
-
-
-class PlayerState:
-    def __init__(self, cards: List, awoken_queens: QueenCollection):
-        self.cards = cards
-        self.awoken_queens = awoken_queens
