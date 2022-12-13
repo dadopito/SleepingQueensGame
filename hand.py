@@ -13,9 +13,10 @@ class Hand:
         if self._picked_cards:
             return self._picked_cards
         return None
+
     def removePickedCardsAndRedraw(self) -> List[Card]:
         if self._picked_cards:
-            ...
+            # TODO ako dostat DrawingAndTrashPile sem?
             drawn_cards = []
             return drawn_cards
 

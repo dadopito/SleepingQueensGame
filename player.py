@@ -16,30 +16,28 @@ class Player:
         self.hand = Hand(player_id, cards)
         self.player_id = player_id
 
-    def play(self, cards: List[HandPosition], target_queen: None | SleepingQueenPosition | AwokenQueenPosition = None):
+    def play(self, cards: List[Position], target_queen: None | SleepingQueenPosition | AwokenQueenPosition = None):
         # select cards to be played
         picked_cards = self.hand.pickCards(cards)
 
         if picked_cards is None:
-            # do nothing?
-            ...
+            return
         elif picked_cards[0].card_type == CardType.Number:
             # Number cards
             if self.evaluateNumberedCards(picked_cards):
                 # go to Hand and play the move
                 self.hand.removePickedCardsAndRedraw()
             else:
-                # can't do exchange with selected cards
-                ...
+                return
         else:
-            # Special cards; picked_cards should contain only one card
+            # Special cards; picked_cards array should now contain only one card
             if picked_cards[0].card_type == CardType.King:
                 if target_queen is not None:
                     self.moveQueen(target_queen)
             elif picked_cards[0].card_type == CardType.Knight:
-                pass
+                self.evaluateAttack()
             elif picked_cards[0].card_type == CardType.SleepingPotion:
-                pass
+                self.evaluateAttack()
             elif picked_cards[0].card_type == CardType.Dragon:
                 pass
             elif picked_cards[0].card_type == CardType.MagicWand:

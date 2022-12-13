@@ -57,6 +57,7 @@ class HandPosition(Position):
 
 
 class GameState:
+    # TODO
     def __init__(self, number_of_players: int, on_turn: int, sleeping_queens: Set[SleepingQueenPosition],
                  cards: dict[HandPosition, Optional[Card]], awoken_queens: dict[AwokenQueenPosition, Queen],
                  cards_discarded_last_turn: List[Card]):

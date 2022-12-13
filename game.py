@@ -5,11 +5,13 @@ from data_types import *
 from queens import QueenCollection
 
 
-class Game:
-    def __init__(self, number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn):
-        self.game_state = GameState(number_of_players, on_turn, sleeping_queens, cards, awoken_queens,
-                                    cards_discarded_last_turn)
+class GameFinishedStrategy:
+    def isFinished(self) -> Optional[int]:
+        pass
 
+
+class Game(GameFinishedStrategy):
+    def __init__(self, number_of_players: int):
         self.sleeping_queens = QueenCollection()
         queens_points = [5, 5, 5, 5, 10, 10, 10, 10, 15, 15, 15, 20]
         shuffle(queens_points)
@@ -35,49 +37,106 @@ class Game:
 
         # TODO number of players and their IDs through GameAdaptor
         self.players = []
-        for i in range(4):
-            self.players.append(Player(cards[:5], i))
+        for i in number_of_players:
+            self.players.append(Player(cards[:5], i+1))
             del cards[:5]
 
         self.drawing_and_trash_pile = DrawingAndTrashPile(cards)
 
-    def play(self, player_id: int, cards: List[HandPosition]) -> Optional[GameState]:
-        pass
+    def isFinished(self) -> Optional[int]:
+        all_queens_awoken = False
+        if len(self.sleeping_queens.getQueens()) == 0:
+            all_queens_awoken = True
 
+        if 2 <= len(self.players) <= 3:
+            total_points = 50
+            total_queens = 5
+        else: # 4-5 players in the game
+            total_points = 40
+            total_queens = 4
 
-class GameAdaptor:
-    def __init__(self, number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn):
-        self.game = Game(number_of_players, on_turn, sleeping_queens, cards, awoken_queens, cards_discarded_last_turn)
+        winner_player_id = None
+        max_player_id = None # player with maximum points if all queens were awoken
+        max_player_points = 0
+        for player in self.players:
+            awoken_queens_collection = player.getPlayerState().awoken_queens.getQueens()
+            player_points = 0
+            player_queens = 0
+            for queen in awoken_queens_collection:
+                player_points += queen.getPoints()
+                player_queens += 1
+            if player_queens >= total_queens or player_points >= total_points:
+                winner_player_id = player.player_id
+            if max_player_points < player_points:
+                max_player_points = player_points
+                max_player_id = player.player_id
+
+        if all_queens_awoken:
+            return max_player_id
+        if winner_player_id is not None:
+            return winner_player_id
+        return None
+
+    def play(self, player_id: int, cards: List[Position]) -> Optional[GameState]:
+        # TODO
+        return GameState()
 
 
 class GameObserver:
-    def __init__(self):
-        pass
-
     def notify(self, message: str):
         pass
 
 
 class GameObservable:
     def __init__(self):
-        pass
+        self._observers = dict()
 
     def add(self, observer: GameObserver):
-        pass
+        if self._observers.get(observer) is None:
+            self._observers[observer] = -1
 
     def addPlayer(self, player_id: int, observer: GameObserver):
-        pass
+        if self._observers.get(observer) is None:
+            self._observers[observer] = -1
+        for registered_player in self._observers.values():
+            if registered_player == player_id:
+                return
+        self._observers[observer] = player_id
 
     def remove(self, observer: GameObserver):
-        pass
+        if self._observers.get(observer) is not None:
+            self._observers.pop(observer)
 
     def notifyAll(self, message: GameState):
-        pass
+        # TODO adjust string format
+        string = "Sleeping Queens:\nNumber of players: " + str(message.number_of_players) + \
+                 "\nSleeping Queens: " + repr(message.sleeping_queens) + "\nOn turn now is Player with id: " + \
+                 str(message.on_turn)
+        for observer, player_id in self._observers.items():
+            observer.notify(string)
+
 
 
 class GamePlayerInterface:
-    def __init__(self):
-        pass
-
+    """Player on turn inputs his move"""
     def play(self, player: str, cards: str) -> str:
         pass
+
+class OtherComponent(GameObserver):
+    pass
+
+class GameAdaptor:
+    def __init__(self, players: List):
+        self.player_map = dict()
+        self.players = []
+        self.game_observable = GameObservable()
+        for i, player in enumerate(players):
+            self.player_map[player] = i+1
+            self.game_observable.addPlayer(i+1, OtherComponent())
+
+        self.game = Game(len(self.player_map))
+
+    def play(self, player: str, cards: str) -> str:
+        if self.player_map.get(player) is None:
+            self.player_map[player] = ...
+
