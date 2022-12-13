@@ -37,7 +37,7 @@ class Game(GameFinishedStrategy):
 
         # TODO number of players and their IDs through GameAdaptor
         self.players = []
-        for i in number_of_players:
+        for i in range(number_of_players):
             self.players.append(Player(cards[:5], i+1))
             del cards[:5]
 
@@ -138,5 +138,6 @@ class GameAdaptor:
 
     def play(self, player: str, cards: str) -> str:
         if self.player_map.get(player) is None:
-            self.player_map[player] = ...
+            return ""
+        # TODO
 
